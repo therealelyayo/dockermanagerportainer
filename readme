@@ -1,0 +1,58 @@
+#simple docker visual manager compiled for headless servers
+
+
+start by installing docker on debian 9
+First, update your existing list of packages:
+
+### sudo apt update
+Next, install a few prerequisite packages which let apt use packages over HTTPS:
+
+### sudo apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+Then add the GPG key for the official Docker repository to your system:
+
+### curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+Add the Docker repository to APT sources:
+
+### sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+Next, update the package database with the Docker packages from the newly added repo:
+
+### sudo apt update
+Make sure you are about to install from the Docker repo instead of the default Debian repo:
+
+### apt-cache policy docker-ce
+You’ll see output like this, although the version number for Docker may be different:
+
+Output of apt-cache policy docker-ce
+docker-ce:
+  Installed: (none)
+  Candidate: 18.06.1~ce~3-0~debian
+  Version table:
+     18.06.1~ce~3-0~debian 500
+        500 https://download.docker.com/linux/debian stretch/stable amd64 Packages
+Notice that docker-ce is not installed, but the candidate for installation is from the Docker repository for Debian 9 (stretch).
+
+# Finally, install Docker:
+
+### sudo apt install docker-ce
+Docker should now be installed, the daemon started, and the process enabled to start on boot. Check that it’s running:
+
+### sudo systemctl status docker
+The output should be similar to the following, showing that the service is active and running:
+
+Output
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2018-07-05 15:08:39 UTC; 2min 55s ago
+     Docs: https://docs.docker.com
+  Main PID: 21319 (dockerd)
+   CGroup: /system.slice/docker.service
+           ├─21319 /usr/bin/dockerd -H fd://
+           └─21326 docker-containerd --config /var/run/docker/containerd/containerd.toml
+Installing Docker now gives you not just the Docker service (daemon) but also the docker command line utility, or the Docker client. We’ll explore how to use the docker command later in this tutorial.
+
+
+# now install portainer
+### docker run -d -p 9000:9000 --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data portainer/portainer
+You can now access Portainer by pointing your web browser at http://DOCKER_HOST:9000
+
+
